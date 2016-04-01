@@ -43,7 +43,7 @@
 		<div id="users"></div>
 	</div>
 
-	<script src="http://code.jquery.com/jquery-latest.min.js"></script>
+	<script src="jquery.js"></script>
 	<script src="/socket.io/socket.io.js"></script>
 	<script>
 		jQuery(function($){
@@ -58,7 +58,7 @@
 
                         
 			$nickForm.submit(function(e){
-			e.preventDefault();
+			e.preventDefault(); // msh 3aeza el page te-refresh b3d el submitting :3
 			socket.emit('new user', $nickBox.val(), function(data){
 			//check if username is valid or not if not dont display chat
 			//send a function to server and get the callback depending on data :) 

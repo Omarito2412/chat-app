@@ -6,10 +6,11 @@ var express = require('express'),
 	users = {};
 	
 server.listen(3000);
+app.use(express.static(__dirname + '/libs'));
 
 // routing :  refers to the definition of application end points (URIs) and how they respond to client requests
 app.get('/', function(req, res){
-    /// the following statement is the respond when a GET request is made to homepage
+    // the following statement is the respond when a GET request is made to homepage
 	res.sendfile(__dirname + '/index.html');
 });
 
@@ -34,7 +35,7 @@ io.sockets.on('connection', function(socket){
 		// check if the client try to whisper by /w space
 		var msg = data.trim();
 		if(msg.substring(0,3) === '/w '){
-			//hb3at le meen ?? ex: /w yomna blablabla try to get yomna :))
+			//hb3at le meen ?? ex: /w yomna blablabla try to get zefta yomna :))
 			msg = msg.substr(3);
 			var ind = msg.indexOf(' ');
 			if(ind != -1){
@@ -52,10 +53,10 @@ io.sockets.on('connection', function(socket){
 			}
 		} else{
   //broadcast to all users except me when server recieves it..
-		io.sockets.emit('new message', {msg: msg, nick: socket.nickname});
-                }
+			io.sockets.emit('new message', {msg: msg, nick: socket.nickname});
+        }
 	});
-        socket.on('disconnect', function(data){
+    socket.on('disconnect', function(data){
 		if(!socket.nickname) return;
            // remove nickname from array after disconnection
 		delete users[socket.nickname];
