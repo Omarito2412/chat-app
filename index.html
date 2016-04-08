@@ -1,9 +1,15 @@
 <html>
 <head>
 	<title>Chat with socket.io and node.js</title>
+		<link href="bootstrap.min.css" rel="stylesheet">
 	<style>
+		body {
+			font-family: arial;
+			background-color: #B7B7B7;
+		}
 		#chat{
 			height:500px;
+			width: 100%;
 		}
 
 		#contentWrap{
@@ -12,35 +18,87 @@
 		#chatWrap{
 			float: left;
 			border: 1px #000 solid;
+			width: 100%;
+		    border-radius: 20px;
+		    margin-top: 15px;
+		    background-color: #D1E8EA;
+		    border: 5px solid black;
 		}
 		.error{
-		color: red;
+			color: red;
 		}
 		.whisper{
-		color: gray;
-		font-style: italic;
+			color: gray;
+			font-style: italic;
+		}
+		.chat-box {
+		    border-radius: 8px;
+    		margin-left: 15px;
+		}
+		#users {
+		    margin-top: 25px;
+		    border: 2px solid #650808;
+		    border-radius: 9px;
+		    min-height: 200px;
+		    background-color: #D1E8EA;
+		}
+		.users-online{
+			font-weight: bold;
+		    text-align: center;
+		    color: #B92323;
+		}
+		.username{
+		    color: #3E0F84;
+			font-weight: bold;
+			margin-left: 10px;
+		}
+		.jumbotron {
+			margin-top: 20px;
+			border-radius: 5px;
+			padding-left: 15px;
+		}
+		.msg {
+			margin-left: 15px;
 		}
 	</style>
 </head>
 <body>
-	<div id="nickWrap">
-		<p>Enter a username:</p>
-		<p id="nickError"></p>
-		<form id="setNick">
-			<input size="35" id="nickname"></input>
-			<input type="submit"></input>
-		</form>
-	</div>
-
-	<div id="contentWrap">
-		<div id="chatWrap">
-			<div id="chat"></div>
-			<form id="send-message">
-				<input size="35" id="message"></input>
-				<input type="submit"></input>
-			</form>
+	<div class="row">
+		<div class="col-md-2"></div>
+		<div class="col-md-8">
+			<div class="jumbotron" id="nickWrap">
+				<div class="container-fluid">
+					<div>
+						<h1> Welcome! Please pick a username.</h1>
+						<p><br><br>Enter a username:</p>
+						<p id="nickError"></p>
+						<form id="setNick">
+							<input autofocus size="35" id="nickname"></input>
+							<input class="btn btn-primary btn-lg" type="submit"></input>
+						</form>
+					</div>
+				</div>
+			</div>
+			<div class="row" id="contentWrap">
+				<div class="col-md-8">
+					<div id="chatWrap">
+						<div id="chat"></div>
+						<form id="send-message">
+							<input size="55" id="message" class="chat-box"></input>
+							<input type="submit" class="btn btn-primary"></input>
+						</form>
+					</div>
+				</div>
+				<div class="col-md-4">
+					<div id="users">
+						<h3 class="users-online"> Users Online </h3>
+					</div>
+				</div>
+			</div>
+				
+				
 		</div>
-		<div id="users"></div>
+		<div class="col-md-2"></div>
 	</div>
 
 	<script src="jquery.js"></script>
@@ -80,9 +138,9 @@
 
 			// display list of current users
 			socket.on('usernames', function(data){
-			var html = '';
+			var html = $users.html();
 			for(i=0; i < data.length; i++){
-				html += data[i] + '</br>' 
+				html += "<p class='username'>" + data[i] + '</p></br>' 
 			}
 			$users.html(html);
 			});
