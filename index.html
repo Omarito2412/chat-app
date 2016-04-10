@@ -1,6 +1,6 @@
 <html>
 <head>
-	<title>Chat with socket.io and node.js</title>
+	<title>Developers chat</title>
 		<link href="bootstrap.min.css" rel="stylesheet">
 	<style>
 		body {
@@ -26,10 +26,12 @@
 		}
 		.error{
 			color: red;
+			margin-left: 15px;
 		}
 		.whisper{
 			color: gray;
 			font-style: italic;
+			margin-left: 15px;
 		}
 		.chat-box {
 		    border-radius: 8px;
@@ -51,6 +53,7 @@
 		    color: #3E0F84;
 			font-weight: bold;
 			margin-left: 10px;
+			margin-bottom: -10px;
 		}
 		.jumbotron {
 			margin-top: 20px;
@@ -59,6 +62,13 @@
 		}
 		.msg {
 			margin-left: 15px;
+		}
+		.join {
+			width: 60%;
+			margin-left: 20%;
+		}
+		.join input{
+			margin: 20px 0;
 		}
 	</style>
 </head>
@@ -69,11 +79,15 @@
 			<div class="jumbotron" id="nickWrap">
 				<div class="container-fluid">
 					<div>
-						<h1> Welcome! Please pick a username.</h1>
-						<p><br><br>Enter a username:</p>
+						<h1> Welcome! <br>Please pick a username.</h1>
 						<p id="nickError"></p>
-						<form id="setNick">
-							<input autofocus size="35" id="nickname"></input>
+						<form id="setNick" class="join">
+							<input autofocus size="35" id="nickname" class="form-control" placeholder="Username"></input>
+							<select name="group" id="group" class="form-control">
+								<option value="php">PHP</option>
+								<option value="javascript">Javascript</option>
+								<option value="python">Python</option>
+							</select>
 							<input class="btn btn-primary btn-lg" type="submit"></input>
 						</form>
 					</div>
@@ -113,11 +127,13 @@
 			var $messageForm = $('#send-message');
 			var $messageBox = $('#message');
 			var $chat = $('#chat');
+			var $group = $('#group');
 
                         
 			$nickForm.submit(function(e){
 			e.preventDefault(); // msh 3aeza el page te-refresh b3d el submitting :3
-			socket.emit('new user', $nickBox.val(), function(data){
+			document.title = $group.val();
+			socket.emit('new user', [$nickBox.val(), $group.val()], function(data){
 			//check if username is valid or not if not dont display chat
 			//send a function to server and get the callback depending on data :) 
 			if(data){
@@ -138,10 +154,16 @@
 
 			// display list of current users
 			socket.on('usernames', function(data){
-			var html = $users.html();
-			for(i=0; i < data.length; i++){
-				html += "<p class='username'>" + data[i] + '</p></br>' 
-			}
+				console.log(data);
+				var html = '<h3 class="users-online"> Users Online </h3>';
+				for(i=0; i < data.length; i++){
+					parts = data[i].split(",");
+					nick = parts[0]
+					group = parts[1]
+					if(group == $group.val()){
+						html += "<p class='username'>" + nick + '</p></br>' 
+					}
+				}
 			$users.html(html);
 			});
 			
@@ -155,7 +177,9 @@
 			});
 			// append msg to rest of users
 				socket.on('new message', function(data){
-					$chat.append('<span class="msg"><b>' + data.nick +": </b>" + data.msg + "</span><br/>");
+					if(data.group == $group.val()){
+						$chat.append('<span class="msg"><b>' + data.nick +": </b>" + data.msg + "</span><br/>");
+					}
 			});
 				socket.on('whisper', function(data){
 					$chat.append('<span class="whisper"><b>' + data.nick +": </b>" + data.msg + "</span><br/>");
